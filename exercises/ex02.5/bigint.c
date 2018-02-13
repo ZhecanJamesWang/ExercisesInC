@@ -11,7 +11,7 @@ Follow these steps to get this program working:
 
 3) Fill in the body of reverse_string().  When you get it working, the first test should pass.
 
-4) Fill in the body of itoc().  When you get it working, the second test should pass.
+4) Fill in the body of ctoi().  When you get it working, the second test should pass.
 
 5) Fill in the body of add_digits().  When you get it working, the third test should pass.
 
@@ -23,6 +23,7 @@ Follow these steps to get this program working:
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <ctype.h>
 
 /* reverse_string: Returns a new string with the characters reversed.
 
@@ -32,8 +33,16 @@ s: string
 returns: string
 */
 char *reverse_string(char *s) {
-    //TODO: Fill this in.
-    return "";
+	int i = 0;
+    size_t len_s = strlen(s);
+    char *reversed = malloc(sizeof(char) * (len_s + 1));
+    char *t = s + len_s - 1;
+    while (t >= s) {
+    	reversed[i] = *t;
+    	i++;
+    	t--;
+    }
+    return reversed;
 }
 
 /* ctoi: Converts a character to integer.
@@ -52,13 +61,14 @@ i: integer 0 to 9
 returns: character '0' to '9'
 */
 char itoc(int i) {
-    //TODO: Fill this in, with an appropriate assertion.
-    return '0';
+	assert(i <= 9);
+	assert(0 <= i);
+    return i + '0';
 }
 
 /* add_digits: Adds two decimal digits, returns the total and carry.
 
-For example, if a='5', b='6', and carry='1', the sum is 12, so
+For example, if a='5', b='6', and c='1', the sum is 12, so
 the output value of total should be '2' and carry should be '1'
 
 a: character '0' to '9'
@@ -69,7 +79,16 @@ carry: pointer to char
 
 */
 void add_digits(char a, char b, char c, char *total, char *carry) {
-    //TODO: Fill this in.
+//	printf("a: %c | b: %c | c: %c\n", a, b, c);
+    int res = ctoi(a) + ctoi(b) + ctoi(c);
+    int new_carry = 0;
+    while (res >= 10) {
+    	res -= 10;
+    	new_carry++;
+    }
+    *carry = itoc(new_carry);
+    *total = itoc(res);
+//    printf("carry: %s | ones: %s\n\n", carry, total);
 }
 
 /* Define a type to represent a BigInt.
@@ -146,6 +165,7 @@ returns: BigInt
 */
 BigInt make_bigint(char *s) {
     char *r = reverse_string(s);
+//    puts("MAKE_BIGINT_PASSED");
     return (BigInt) r;
 }
 
@@ -180,15 +200,15 @@ void test_add_digits() {
 
 void test_add_bigint() {
     char *s = "1";
-    char *t = "99999999999999999999999999999999999999999999";
+    char *t =   "99999999999999999999999999999999999999999999";
     char *res = "000000000000000000000000000000000000000000001";
 
-    BigInt big1 = make_bigint(s);    
+    BigInt big1 = make_bigint(s);
     BigInt big2 = make_bigint(t);
     BigInt big3 = malloc(100);
 
 	add_bigint(big1, big2, '0', big3);
-    
+
     if (strcmp(big3, res) == 0) {
         printf("add_bigint passed\n");
     } else {
@@ -204,6 +224,6 @@ int main (int argc, char *argv[])
 
     //TODO: When you have the first three functions working,
     //      uncomment the following, and it should work.
-    // test_add_bigint();
+     test_add_bigint();
     return 0;
 }
